@@ -1,27 +1,17 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import  './websocket';
 
-
-interface WsProps {
-    socket: WebSocket
-}
-
-interface State {
-    dataList: string
-}
-
-const ws = new WebSocket('ws://localhost:8080/films/subscribe');
+const ws = new WebSocket('ws://localhost:8080/subscribe');
 
 ws.addEventListener('open', function open() {
-    ws.send('establishing connection');
+    ws.send('{"tableName":"films_changed"}');
     console.log('Connection to server established')
 });
 
-class MainTable extends React.Component<WsProps,State> {
+class MainTable extends React.Component<{ socket: WebSocket }, { dataList: string }> {
 
-    constructor(props: WsProps) {
+    constructor(props: { socket: WebSocket }) {
         super(props);
         this.state = {dataList: '{"none":"text"}'}
         this.props.socket.addEventListener('message', (data) => {
@@ -34,8 +24,6 @@ class MainTable extends React.Component<WsProps,State> {
         return (<div>{this.state.dataList}</div>);
     }
 }
-
-
 
 // ========================================
 
